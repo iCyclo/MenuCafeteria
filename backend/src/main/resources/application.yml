@@ -1,0 +1,8 @@
+spring:
+ application:
+  name: backend
+ datasource:
+  url: jdbc:mysql://localhost:3306/cafeteria
+  username: root
+  password: root
+  driver-class-name: com.mysql.cj.jdbc.Driver
