@@ -1,0 +1,21 @@
+<div class="dialog flex column">
+  <div class="fields flex column">
+    <label>Nombre de categoria</label>
+    <mat-form-field appearance="outline">
+      <input matInput [(ngModel)]="name">
+    </mat-form-field>
+    <label >Imagen de categoria</label>
+    <label for="fileInput" class="file-label">
+      Seleccionar Imagen
+    </label>
+    <input type="file" id="fileInput" accept="image/*" (change)="onFileSelected($event)" hidden>
+    @if(imagePreview) {
+      <img class="file-selected" [src]="imagePreview" alt="preview">
+    }
+  </div>
+
+  <div class="btns flex j-end">
+    <button mat-stroked-button (click)="save()">Aceptar</button>
+    <button mat-stroked-button (click)="close()">Cancelar</button>
+  </div>
+</div>

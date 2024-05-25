@@ -1,0 +1,33 @@
+.btn-container{
+    position: fixed;
+    width: 10rem;
+    height: 10rem;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1;
+}
+
+
+button{
+    width: 100%;
+    height: 100%;
+    padding: 2rem;
+    border-radius: 50%;
+}
+
+.list-container{
+    position: fixed;
+    width: 0rem;
+    height: calc(100% - 10rem);
+    top: 2rem;
+    right: 2rem;
+    background-color: white;
+    transition: width 0.2s ease;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.opened{
+    width: 20rem;
+    border: 1px solid black;
+}

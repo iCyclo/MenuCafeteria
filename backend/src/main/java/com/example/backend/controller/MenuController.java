@@ -14,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("cafeteria")
+@CrossOrigin(origins = "*") 
 @RequiredArgsConstructor
 public class MenuController {
 

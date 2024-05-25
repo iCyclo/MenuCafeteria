@@ -1,0 +1,12 @@
+<div class="container">
+  <header class="flex a-center j-between">
+    <button mat-stroked-button (click)="openDialog()" >Agregar</button>
+    <h1>{{isChecked ? 'Categorias' : 'Productos'}}</h1>
+    <p>Productos  <mat-slide-toggle [hideIcon]="true" color="primary" [(ngModel)]="isChecked"></mat-slide-toggle>  Categorias</p>
+  </header>
+  @if(!isChecked){
+    <esime-products />
+  } @else {
+    <esime-categories />
+  }
+</div>
