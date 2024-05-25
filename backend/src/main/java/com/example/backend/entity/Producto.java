@@ -23,7 +23,7 @@ public class Producto implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_producto")
+    @Column(name = "id_Producto")
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
