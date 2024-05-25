@@ -1,0 +1,11 @@
+.search{
+    flex-grow: 1;
+}
+
+th, td{
+    width: 33%;
+}
+
+.btns{
+    gap: 1rem;
+}

@@ -1,0 +1,10 @@
+<router-outlet />
+<div class="btn-container">
+  <button mat-flat-button color="primary" (click)="toggleList()">{{isListOpened ?  'Cerrar' : 'Categorias'}}</button>
+</div>
+
+
+  <div class="list-container" [ngClass]="{'opened': isListOpened}">
+    <esime-category-list />
+  </div>
+

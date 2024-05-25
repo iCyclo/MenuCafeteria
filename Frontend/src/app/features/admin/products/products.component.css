@@ -1,0 +1,15 @@
+.fields{
+ gap: 2rem;   
+}
+
+.search{
+    flex-grow: 1;
+}
+
+.btns{
+    gap: 1rem;
+}
+
+th, td{
+    width: 25%;
+}

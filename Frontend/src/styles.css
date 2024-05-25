@@ -1,4 +1,93 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+html {
+  box-sizing: border-box;
+  font-size: 62.5%;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+h1 {
+    font-size: 4rem; /* Aproximadamente 40px */
+}
+
+h2 {
+    font-size: 3.2rem; /* Aproximadamente 32px */
+}
+
+h3 {
+    font-size: 2.8rem; /* Aproximadamente 28px */
+}
+
+h4 {
+    font-size: 2.4rem; /* Aproximadamente 24px */
+}
+
+h5 {
+    font-size: 2rem; /* Aproximadamente 20px */
+}
+
+p, span, label{
+    font-size: 1.6rem; /* Aproximadamente 16px */
+}
+
+label{
+    margin-bottom: 1rem;
+}
+
+/* UTIL */
+
+.container{
+    width: 90%;
+    max-width: 120rem;
+    margin: 0 auto;
+}
+
+.limiter{
+    width: 100vw;
+    height: 100vh;
+    padding: 2rem;
+}
+
+.flex{
+    display: flex;
+}
+
+.column{
+    flex-direction: column;
+}
+
+.a-center{
+    align-items: center;
+}
+
+.j-center{
+    justify-content: center;
+}
+
+.j-end{
+    justify-content: flex-end;
+}
+
+.j-between{
+    justify-content: space-between;
+}
+
+.dialog{
+    height: 100%;
+    padding: 2rem;
+}
+

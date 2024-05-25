@@ -1,0 +1,29 @@
+<div class="dialog flex column">
+  <div  class="fields flex column">
+    <label>Nombre de producto</label>
+    <mat-form-field appearance="outline">
+      <input matInput [(ngModel)]="name">
+    </mat-form-field>
+    <label>Descripcion de producto</label>
+    <mat-form-field appearance="outline">
+      <input matInput [(ngModel)]="description">
+    </mat-form-field>
+    <label>Categoria de producto</label>
+    <mat-form-field appearance="outline">
+      <mat-select [(ngModel)]="category">
+        @for (category of categories; track $index) {
+          <mat-option [value]="category">{{category.nombre}}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <label>Precio de producto</label>
+    <mat-form-field appearance="outline">
+      <input matInput type="number" [(ngModel)]="price">
+    </mat-form-field>
+  </div>
+
+  <div class="btns flex j-end">
+    <button mat-stroked-button (click)="save()">Aceptar</button>
+    <button mat-stroked-button (click)="close()">Cancelar</button>
+  </div>
+</div>
