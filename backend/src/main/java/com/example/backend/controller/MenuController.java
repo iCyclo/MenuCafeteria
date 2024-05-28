@@ -6,11 +6,14 @@ import com.example.backend.repository.CategoriaRepository;
 import com.example.backend.repository.ProductoRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("cafeteria")
@@ -42,13 +45,40 @@ public class MenuController {
     }
 
     @PostMapping("guardar-categoria")
-    @Transactional
-    public ResponseEntity<String> guardarCategoria(@RequestBody Categoria categoria) {
-        if(categoria.getId() != 0)
-            categoria = categoriaRepository.getReferenceById(categoria.getId());
-        categoria = categoriaRepository.save(categoria);
-        return ResponseEntity.ok("Se ha guardado la categoría: ".concat(categoria.getNombre()));
+@Transactional
+public ResponseEntity<String> guardarCategoria(@RequestBody Categoria categoria) {
+    try {
+        // Validación básica
+        if (categoria == null || categoria.getNombre() == null || categoria.getNombre().isEmpty()) {
+            return ResponseEntity.badRequest().body("Datos de la categoría no válidos");
+        }
+
+        // Si la categoría tiene un ID, intentamos buscarla para actualizar
+        if (categoria.getId() != 0) {
+            Optional<Categoria> existingCategoria = categoriaRepository.findById(categoria.getId());
+            if (existingCategoria.isPresent()) {
+                // Actualizar la categoría existente
+                Categoria categoriaToUpdate = existingCategoria.get();
+                categoriaToUpdate.setNombre(categoria.getNombre());
+                categoriaToUpdate.setImagen(categoria.getImagen());
+                // Aquí puedes actualizar otros campos si los hay
+                categoria = categoriaRepository.save(categoriaToUpdate);
+            } else {
+                // Si no existe, devolver un error o manejar como nuevo
+                return ResponseEntity.badRequest().body("La categoría con el ID especificado no existe");
+            }
+        } else {
+            // Guardar nueva categoría
+            categoria = categoriaRepository.save(categoria);
+        }
+
+        return ResponseEntity.ok("Se ha guardado la categoría: " + categoria.getNombre());
+
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                             .body("Ocurrió un error al guardar la categoría: " + e.getMessage());
     }
+}
 
     @PostMapping("guardar-producto")
     @Transactional

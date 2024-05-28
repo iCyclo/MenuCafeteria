@@ -7,8 +7,10 @@ import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { Category } from '../../../types/category.types';
 import { ClientService } from '../../../services/client.service';
-import { tap } from 'rxjs';
+import { Observable, debounceTime, distinctUntilChanged, filter, switchMap, tap } from 'rxjs';
 import { AdminService } from '../../../services/admin.service';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { SelectImageComponent } from '../../../components/select-image/select-image.component';
 
 @Component({
   selector: 'esime-categories',
@@ -22,20 +24,53 @@ import { AdminService } from '../../../services/admin.service';
     MatSelectModule,
     MatTableModule,
     MatButtonModule,
+    ReactiveFormsModule,
+    SelectImageComponent
   ],
 })
 export class CategoriesComponent implements OnInit {
+
+  searchField!: FormControl
+  selectedCategory!: Category
   dataSource: Category[] = [];
+  originalData : Category[] = [];
 
   displayedColumns: string[] = ['name', 'image', 'actions'];
 
+  categoryForm! : FormGroup
+
   constructor(
     private clientService: ClientService,
-    private adminService: AdminService
+    private adminService: AdminService,
+    private formBuilder: FormBuilder
   ) {}
 
   ngOnInit() {
+    this.searchField = new FormControl('')
     this.initCategories();
+
+    this.categoryForm = this.formBuilder.group({
+      nombre: ['', Validators.required],
+      imagen: ['', Validators.required]
+    })
+  }
+
+  initSearch() : Observable<any>{
+
+    return this.searchField.valueChanges.pipe(
+      debounceTime(500),
+      distinctUntilChanged(),
+      tap(value => this.filter(value))
+    )
+  }
+
+  filter(value : string){
+    value = value.toLowerCase()
+    if (value === '') {
+      this.dataSource = [...this.originalData];
+    } else {
+      this.dataSource = this.originalData.filter(c => c.nombre.toLowerCase().includes(value));
+    }
   }
 
   initCategories() {
@@ -43,12 +78,44 @@ export class CategoriesComponent implements OnInit {
       .getCategories()
       .pipe(
         tap((categories) => {
-          this.dataSource = categories.map((category) => ({
-            ...category,
-          }));
-        })
+          this.dataSource = categories
+          this.originalData = this.dataSource;
+        }),
+        switchMap(()=> this.initSearch())
       )
       .subscribe();
+  }
+
+  edit(category : Category){
+    
+    if(this.selectedCategory != undefined) return
+    console.log('editando');
+    this.selectedCategory = category;
+    this.categoryForm.patchValue({
+      nombre: this.selectedCategory.nombre,
+      imagen: this.selectedCategory.imagen
+    })
+  }
+
+  onSelectedImage(image : string){
+    this.control('imagen').patchValue(image)
+  }
+
+  saveEdit( ){
+    this.categoryForm.markAllAsTouched()
+    if(this.categoryForm.valid){
+      this.selectedCategory.nombre = this.control('nombre').value;
+      this.selectedCategory.imagen = this.control('imagen').value
+    }
+    
+    this.adminService.saveCategory(this.selectedCategory).pipe(
+      tap(()=> this.selectedCategory = undefined)
+    ).subscribe()
+    
+  }
+
+  control(name : keyof Category){
+    return this.categoryForm.get(name) as FormControl
   }
 
   addData(category: Category) {

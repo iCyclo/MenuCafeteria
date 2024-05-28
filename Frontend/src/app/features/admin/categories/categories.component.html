@@ -2,7 +2,7 @@
   <div class="fields flex">
     <mat-form-field class="search" appearance="outline">
       <mat-icon matPrefix>search</mat-icon>
-      <input matInput placeholder="Buscar" />
+      <input matInput placeholder="Buscar" [formControl]="searchField" />
     </mat-form-field>
   </div>
 
@@ -10,14 +10,35 @@
     <
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>Nombre</th>
-      <td mat-cell *matCellDef="let category">{{ category.nombre }}</td>
+
+      <td mat-cell *matCellDef="let category">
+        @if (selectedCategory != category) {
+        {{ category.nombre }}
+        } @else {
+        <mat-form-field [appearance]="'outline'" style="margin-bottom: -1.25em">
+          <input
+            matInput
+            type="text"
+            [formControl]="control('nombre')"
+            autocomplete="off"
+          />
+        </mat-form-field>
+        }
+      </td>
     </ng-container>
 
     <ng-container matColumnDef="image">
       <th mat-header-cell *matHeaderCellDef>Imagen</th>
       <td mat-cell *matCellDef="let category">
-        <img [src]="'data:image/png;base64,' + category.imagen" [alt]="category.nombre" width="100">
-
+        @if (selectedCategory != category) {
+        <img
+          [src]="'data:image/png;base64,' + category.imagen"
+          [alt]="category.nombre"
+          width="100"
+        />
+        } @else {
+          <esime-select-image (sendImage)="onSelectedImage($event)" imageWidth="100px" />
+        }
       </td>
     </ng-container>
 
@@ -25,8 +46,17 @@
       <th mat-header-cell *matHeaderCellDef>Accion</th>
       <td mat-cell *matCellDef="let category">
         <div class="btns flex">
-          <button mat-flat-button color="primary">Editar</button>
-          <button mat-stroked-button (click)="delete(category)">Eliminar</button>
+          @if (selectedCategory != category) {
+          <button mat-flat-button color="primary" (click)="edit(category)">
+            Editar
+          </button>
+          <button mat-stroked-button (click)="delete(category)">
+            Eliminar
+          </button>
+          } @else {
+          <button mat-flat-button color="primary" (click)="saveEdit()">Guardar</button>
+          <button mat-stroked-button>Cancelar</button>
+          }
         </div>
       </td>
     </ng-container>
@@ -34,5 +64,4 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
   </table>
-
 </div>

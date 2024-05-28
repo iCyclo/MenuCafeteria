@@ -31,7 +31,7 @@ export default class AdminComponent implements OnInit {
   @ViewChild(ProductsComponent) products!: ProductsComponent;
   @ViewChild(CategoriesComponent) categories!: CategoriesComponent;
 
-  isChecked: boolean = false;
+  isChecked: boolean = true;
 
   constructor(private dialog: MatDialog, private adminService: AdminService) {}
 
