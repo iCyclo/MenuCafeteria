@@ -111,7 +111,11 @@ export class CategoriesComponent implements OnInit {
     this.adminService.saveCategory(this.selectedCategory).pipe(
       tap(()=> this.selectedCategory = undefined)
     ).subscribe()
-    
+  }
+
+  cancelEdit(){
+    this.selectedCategory = undefined;
+    this.categoryForm.reset()
   }
 
   control(name : keyof Category){
