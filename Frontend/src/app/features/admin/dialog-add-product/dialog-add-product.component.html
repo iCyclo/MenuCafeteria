@@ -2,15 +2,15 @@
   <div  class="fields flex column">
     <label>Nombre de producto</label>
     <mat-form-field appearance="outline">
-      <input matInput [(ngModel)]="name">
+      <input matInput [formControl]="control('nombre')">
     </mat-form-field>
     <label>Descripcion de producto</label>
     <mat-form-field appearance="outline">
-      <input matInput [(ngModel)]="description">
+      <input matInput [formControl]="control('descripcion')">
     </mat-form-field>
     <label>Categoria de producto</label>
     <mat-form-field appearance="outline">
-      <mat-select [(ngModel)]="category">
+      <mat-select [formControl]="control('categoria')">
         @for (category of categories; track $index) {
           <mat-option [value]="category">{{category.nombre}}</mat-option>
         }
@@ -18,7 +18,7 @@
     </mat-form-field>
     <label>Precio de producto</label>
     <mat-form-field appearance="outline">
-      <input matInput type="number" [(ngModel)]="price">
+      <input matInput type="number" [formControl]="control('precio')">
     </mat-form-field>
   </div>
 

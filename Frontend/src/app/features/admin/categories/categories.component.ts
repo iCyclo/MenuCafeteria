@@ -7,10 +7,25 @@ import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { Category } from '../../../types/category.types';
 import { ClientService } from '../../../services/client.service';
-import { Observable, debounceTime, distinctUntilChanged, filter, switchMap, tap } from 'rxjs';
+import {
+  Observable,
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { AdminService } from '../../../services/admin.service';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { SelectImageComponent } from '../../../components/select-image/select-image.component';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../../../components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'esime-categories',
@@ -25,51 +40,52 @@ import { SelectImageComponent } from '../../../components/select-image/select-im
     MatTableModule,
     MatButtonModule,
     ReactiveFormsModule,
-    SelectImageComponent
+    SelectImageComponent,
   ],
 })
 export class CategoriesComponent implements OnInit {
-
-  searchField!: FormControl
-  selectedCategory!: Category
+  searchField!: FormControl;
+  selectedCategory!: Category;
   dataSource: Category[] = [];
-  originalData : Category[] = [];
+  originalData: Category[] = [];
 
   displayedColumns: string[] = ['name', 'image', 'actions'];
 
-  categoryForm! : FormGroup
+  categoryForm!: FormGroup;
 
   constructor(
     private clientService: ClientService,
     private adminService: AdminService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
-    this.searchField = new FormControl('')
+    this.searchField = new FormControl('');
     this.initCategories();
 
     this.categoryForm = this.formBuilder.group({
       nombre: ['', Validators.required],
-      imagen: ['', Validators.required]
-    })
+      imagen: ['', Validators.required],
+    });
   }
 
-  initSearch() : Observable<any>{
-
+  initSearch(): Observable<any> {
     return this.searchField.valueChanges.pipe(
       debounceTime(500),
       distinctUntilChanged(),
-      tap(value => this.filter(value))
-    )
+      tap((value) => this.filter(value))
+    );
   }
 
-  filter(value : string){
-    value = value.toLowerCase()
+  filter(value: string) {
+    value = value.toLowerCase();
     if (value === '') {
       this.dataSource = [...this.originalData];
     } else {
-      this.dataSource = this.originalData.filter(c => c.nombre.toLowerCase().includes(value));
+      this.dataSource = this.originalData.filter((c) =>
+        c.nombre.toLowerCase().includes(value)
+      );
     }
   }
 
@@ -78,48 +94,48 @@ export class CategoriesComponent implements OnInit {
       .getCategories()
       .pipe(
         tap((categories) => {
-          this.dataSource = categories
+          this.dataSource = categories;
           this.originalData = this.dataSource;
         }),
-        switchMap(()=> this.initSearch())
+        switchMap(() => this.initSearch())
       )
       .subscribe();
   }
 
-  edit(category : Category){
-    
-    if(this.selectedCategory != undefined) return
+  edit(category: Category) {
+    if (this.selectedCategory != undefined) return;
     console.log('editando');
     this.selectedCategory = category;
     this.categoryForm.patchValue({
       nombre: this.selectedCategory.nombre,
-      imagen: this.selectedCategory.imagen
-    })
+      imagen: this.selectedCategory.imagen,
+    });
   }
 
-  onSelectedImage(image : string){
-    this.control('imagen').patchValue(image)
+  onSelectedImage(image: string) {
+    this.control('imagen').patchValue(image);
   }
 
-  saveEdit( ){
-    this.categoryForm.markAllAsTouched()
-    if(this.categoryForm.valid){
+  saveEdit() {
+    this.categoryForm.markAllAsTouched();
+    if (this.categoryForm.valid) {
       this.selectedCategory.nombre = this.control('nombre').value;
-      this.selectedCategory.imagen = this.control('imagen').value
+      this.selectedCategory.imagen = this.control('imagen').value;
     }
-    
-    this.adminService.saveCategory(this.selectedCategory).pipe(
-      tap(()=> this.selectedCategory = undefined)
-    ).subscribe()
+
+    this.adminService
+      .saveCategory(this.selectedCategory)
+      .pipe(tap(() => (this.selectedCategory = undefined)))
+      .subscribe();
   }
 
-  cancelEdit(){
+  cancelEdit() {
     this.selectedCategory = undefined;
-    this.categoryForm.reset()
+    this.categoryForm.reset();
   }
 
-  control(name : keyof Category){
-    return this.categoryForm.get(name) as FormControl
+  control(name: keyof Category) {
+    return this.categoryForm.get(name) as FormControl;
   }
 
   addData(category: Category) {
@@ -127,8 +143,20 @@ export class CategoriesComponent implements OnInit {
   }
 
   delete(category: Category) {
-    this.adminService.deleteCategory(category).subscribe(() => {
-      this.dataSource = this.dataSource.filter((c) => c !== category);
-    });
+    this.dialog
+      .open(ConfirmDialogComponent, {
+        width: '250px',
+        data: `¿Seguro que desea eliminar la categoria ${category.nombre}?`,
+      })
+      .afterClosed()
+      .pipe(
+        filter((data) => data == true),
+        switchMap(() => this.adminService.deleteCategory(category)),
+        tap(
+          () =>
+            (this.dataSource = this.dataSource.filter((c) => c !== category))
+        )
+      )
+      .subscribe();
   }
 }

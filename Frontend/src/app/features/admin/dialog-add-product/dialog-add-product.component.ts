@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -21,42 +21,60 @@ import { MatDialogRef } from '@angular/material/dialog';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    FormsModule,
+    ReactiveFormsModule
   ],
 })
 export class DialogAddProductComponent implements OnInit {
-  name!: string;
-  description!: string;
-  price!: number;
-  category!: Category;
+ 
 
-  categories! : Category[]
+  categories!: Category[];
 
-  constructor(private dialogRef: MatDialogRef<DialogAddProductComponent>,  private clientService : ClientService) {}
+  productForm: FormGroup;
+
+  constructor(
+    private dialogRef: MatDialogRef<DialogAddProductComponent>,
+    private clientService: ClientService, 
+    private fb : FormBuilder
+  ) {}
 
   ngOnInit() {
-    this.initCategories()
+
+    this.productForm = this.fb.group({
+      nombre: ['' , [Validators.required, Validators.pattern(/^[a-zA-Z0-9 ]+$/)]],
+      descripcion: ['',[Validators.required, Validators.pattern(/^[a-zA-Z0-9 ]+$/)]],
+      categoria: ['', Validators.required],
+      precio: ['', [Validators.required, Validators.pattern(/^\d*\.?\d+$/)]],
+    })
+    this.initCategories();
   }
 
-  initCategories(){
-    this.clientService.getCategories().pipe(
-      tap(categories => this.categories = categories)
-    ).subscribe()
+  initCategories() {
+    this.clientService
+      .getCategories()
+      .pipe(tap((categories) => (this.categories = categories)))
+      .subscribe();
   }
 
   close() {
     this.dialogRef.close(undefined);
   }
 
-  save() {
-    const productToSave: Product = {
-      id: 0,
-      nombre: this.name,
-      descripcion: this.description,
-      categoria: this.category,
-      precio: this.price,
-    };
+  control(name: keyof Product) : FormControl{
+    return this.productForm.get(name) as FormControl
+  }
 
-    this.dialogRef.close(productToSave);
+  save() {
+    this.productForm.markAllAsTouched()
+    if(this.productForm.valid){
+      const productToSave: Product = {
+        id: 0,
+        nombre: this.control('nombre').value,
+        descripcion: this.control('descripcion').value,
+        categoria: this.control('categoria').value,
+        precio: this.control('precio').value,
+      };
+      this.dialogRef.close(productToSave);
+    }
+
   }
 }

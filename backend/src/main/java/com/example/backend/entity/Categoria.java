@@ -37,7 +37,7 @@ public class Categoria implements Serializable {
     private byte[] imagen;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "categoria")
+    @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Producto> productos;
 
 }

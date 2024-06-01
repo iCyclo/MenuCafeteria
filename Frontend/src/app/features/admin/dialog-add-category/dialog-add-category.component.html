@@ -2,7 +2,7 @@
   <div class="fields flex column">
     <label>Nombre de categoria</label>
     <mat-form-field appearance="outline">
-      <input matInput [(ngModel)]="name">
+      <input matInput [formControl]="control('nombre')">
     </mat-form-field>
     <label >Imagen de categoria</label>
     <label for="fileInput" class="file-label">

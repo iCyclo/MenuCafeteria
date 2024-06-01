@@ -80,16 +80,49 @@ public ResponseEntity<String> guardarCategoria(@RequestBody Categoria categoria)
     }
 }
 
-    @PostMapping("guardar-producto")
-    @Transactional
-    public ResponseEntity<String> guardarProducto(@RequestBody Producto producto) {
-        if(producto.getId() != 0)
-            producto = productoRepository.getReferenceById(producto.getId());
-        var categoria = categoriaRepository.getReferenceById(producto.getCategoria().getId());
-        producto.setCategoria(categoria);
-        producto = productoRepository.save(producto);
-        return ResponseEntity.ok("Se ha guardado el producto: ".concat(producto.getNombre()));
+@PostMapping("guardar-producto")
+@Transactional
+public ResponseEntity<String> guardarProducto(@RequestBody Producto producto) {
+    try {
+        // Validación básica
+        if (producto == null || producto.getNombre() == null || producto.getNombre().isEmpty()) {
+            return ResponseEntity.badRequest().body("Datos del producto no válidos");
+        }
+        if (producto.getCategoria() == null || producto.getCategoria().getId() == 0) {
+            return ResponseEntity.badRequest().body("Categoría del producto no válida");
+        }
+
+        // Manejo de actualizaciones
+        if (producto.getId() != 0) {
+            Optional<Producto> existingProducto = productoRepository.findById(producto.getId());
+            if (existingProducto.isPresent()) {
+                Producto productoToUpdate = existingProducto.get();
+                productoToUpdate.setNombre(producto.getNombre());
+                productoToUpdate.setDescripcion(producto.getDescripcion());
+                productoToUpdate.setPrecio(producto.getPrecio());
+                productoToUpdate.setCategoria(categoriaRepository.getReferenceById(producto.getCategoria().getId()));
+                producto = productoRepository.save(productoToUpdate);
+            } else {
+                return ResponseEntity.badRequest().body("El producto con el ID especificado no existe");
+            }
+        } else {
+            // Guardar nuevo producto
+            var categoria = categoriaRepository.findById(producto.getCategoria().getId());
+            if (categoria.isPresent()) {
+                producto.setCategoria(categoria.get());
+                producto = productoRepository.save(producto);
+            } else {
+                return ResponseEntity.badRequest().body("La categoría con el ID especificado no existe");
+            }
+        }
+
+        return ResponseEntity.ok("Se ha guardado el producto: " + producto.getNombre());
+
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                             .body("Ocurrió un error al guardar el producto: " + e.getMessage());
     }
+}
 
     @DeleteMapping("eliminar-producto/{id}")
     public void eliminarProducto(@PathVariable int id) {
