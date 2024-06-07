@@ -36,7 +36,7 @@ export class DialogAddCategoryComponent implements OnInit {
 
   ngOnInit() {
     this.categoryForm = this.fb.group({
-      nombre: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9 ]+$/)]],
+      nombre: ['', [Validators.required, Validators.pattern(/^[a-zA-ZÀ-ÿ0-9 ]+$/)]],
       imagen: [''],
     });
   }

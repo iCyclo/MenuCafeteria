@@ -88,9 +88,6 @@ public ResponseEntity<String> guardarProducto(@RequestBody Producto producto) {
         if (producto == null || producto.getNombre() == null || producto.getNombre().isEmpty()) {
             return ResponseEntity.badRequest().body("Datos del producto no válidos");
         }
-        if (producto.getCategoria() == null || producto.getCategoria().getId() == 0) {
-            return ResponseEntity.badRequest().body("Categoría del producto no válida");
-        }
 
         // Manejo de actualizaciones
         if (producto.getId() != 0) {
@@ -100,7 +97,6 @@ public ResponseEntity<String> guardarProducto(@RequestBody Producto producto) {
                 productoToUpdate.setNombre(producto.getNombre());
                 productoToUpdate.setDescripcion(producto.getDescripcion());
                 productoToUpdate.setPrecio(producto.getPrecio());
-                productoToUpdate.setCategoria(categoriaRepository.getReferenceById(producto.getCategoria().getId()));
                 producto = productoRepository.save(productoToUpdate);
             } else {
                 return ResponseEntity.badRequest().body("El producto con el ID especificado no existe");
