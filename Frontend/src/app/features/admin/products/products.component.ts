@@ -124,12 +124,12 @@ export class ProductsComponent implements OnInit {
   saveEdit() {
     this.productForm.markAllAsTouched();
     if (this.productForm.valid) {
-      this.selectedProduct!.nombre = this.control('nombre').value;
-      this.selectedProduct!.descripcion = this.control('descripcion').value;
-      this.selectedProduct!.precio = this.control('precio').value;
+      this.selectedProduct.nombre = this.control('nombre').value;
+      this.selectedProduct.descripcion = this.control('descripcion').value;
+      this.selectedProduct.precio = this.control('precio').value;
 
       this.adminService
-        .saveProduct(this.selectedProduct!)
+        .saveProduct(this.selectedProduct)
         .pipe(
           tap(() => {
             this.selectedProduct = undefined;
