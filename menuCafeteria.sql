@@ -9,7 +9,7 @@ USE `cafeteria` ;
 CREATE TABLE IF NOT EXISTS `cafeteria`.`Categorias` (
   `id_categoria` INT NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(45) NOT NULL,
-  `imagen` BLOB NOT NULL,
+  `imagen` LONGBLOB NOT NULL,
   PRIMARY KEY (`id_categoria`))
 ENGINE = InnoDB;
 
