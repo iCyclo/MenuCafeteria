@@ -1,0 +1,11 @@
+label{
+    border: 1px solid gray;
+    height: 55px;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 5rem;
+}
+
+label:hover{
+    cursor: pointer;
+}

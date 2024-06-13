@@ -1,11 +1,14 @@
-<div>
-  <label for="fileInput" class="file-label"> Seleccionar Imagen </label>
+<div class="flex column" [ngClass]="{'a-center': center}">
+  <label for="fileInput" class="file-label" [ngStyle]="{'width': fieldWidth}"> Seleccionar Imagen </label>
   <input
     type="file"
     id="fileInput"
     accept="image/*"
     (change)="onFileSelected($event)"
     hidden
+
+    
+
   />
   @if(imagePreview) {
   <img class="file-selected" [src]="imagePreview" alt="preview" [ngStyle]="{'width': imageWidth}"/>

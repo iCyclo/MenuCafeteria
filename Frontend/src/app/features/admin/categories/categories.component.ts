@@ -65,7 +65,10 @@ export class CategoriesComponent implements OnInit {
     this.initCategories();
 
     this.categoryForm = this.formBuilder.group({
-      nombre: ['', Validators.required],
+      nombre: [
+        '',
+        [Validators.required, Validators.pattern(/^[a-zA-Z0-9 ]+$/)],
+      ],
       imagen: ['', Validators.required],
     });
   }
@@ -121,12 +124,12 @@ export class CategoriesComponent implements OnInit {
     if (this.categoryForm.valid) {
       this.selectedCategory.nombre = this.control('nombre').value;
       this.selectedCategory.imagen = this.control('imagen').value;
-    }
 
-    this.adminService
-      .saveCategory(this.selectedCategory)
-      .pipe(tap(() => (this.selectedCategory = undefined)))
-      .subscribe();
+      this.adminService
+        .saveCategory(this.selectedCategory)
+        .pipe(tap(() => (this.selectedCategory = undefined)))
+        .subscribe();
+    }
   }
 
   cancelEdit() {

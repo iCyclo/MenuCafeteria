@@ -5,13 +5,7 @@
       <input matInput [formControl]="control('nombre')">
     </mat-form-field>
     <label >Imagen de categoria</label>
-    <label for="fileInput" class="file-label">
-      Seleccionar Imagen
-    </label>
-    <input type="file" id="fileInput" accept="image/*" (change)="onFileSelected($event)" hidden>
-    @if(imagePreview) {
-      <img class="file-selected" [src]="imagePreview" alt="preview">
-    }
+    <esime-select-image imageWidth="200px" (sendImage)="onSelectedImage($event)"/>
   </div>
 
   <div class="btns flex j-end">

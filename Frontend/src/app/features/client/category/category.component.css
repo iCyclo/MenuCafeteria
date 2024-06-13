@@ -1,6 +1,11 @@
 .list{
+    width: 60%;
     border: 1px solid black;
     padding: 2rem;
+}
+
+.content{
+    gap: 2rem;
 }
 
 h1{
@@ -32,6 +37,6 @@ li:not(:last-child){
 
 .category-img{
     display: block;
-    width: 20rem;
-    margin: 0 auto;
+    width: 40%;
+
 }

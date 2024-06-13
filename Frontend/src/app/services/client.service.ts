@@ -21,4 +21,8 @@ constructor(private http: HttpClient) { }
     return this.http.get<Product[]>(`${this.baseUrl}/filtrar-productos`, {params:{categoria: categoryName}})
   }
 
+  getCategory(categoryName: string): Observable<Category>{
+    return this.http.get<Category>(`${this.baseUrl}/categoria-por-nombre`, {params: {nombre: categoryName}})
+  }
+
 }

@@ -89,5 +89,16 @@ label{
 .dialog{
     height: 100%;
     padding: 2rem;
+    gap: 2rem;
 }
 
+
+/* OVERRIDES  */
+
+.mdc-switch:enabled .mdc-switch__shadow{
+    background-color: white;
+}
+
+.mdc-switch:enabled .mdc-switch__track::after{
+    background-color: #6AA84F !important;
+}

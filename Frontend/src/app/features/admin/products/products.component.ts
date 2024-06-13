@@ -14,6 +14,7 @@ import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
@@ -61,9 +62,9 @@ export class ProductsComponent implements OnInit {
     this.initCategories();
 
     this.productForm = this.fb.group({
-      nombre: [''],
-      precio: [''],
-      descripcion: [''],
+      nombre: ['' , [Validators.required, Validators.pattern(/^[a-zA-Z0-9 ]+$/)]],
+      descripcion: ['',[Validators.required, Validators.pattern(/^[a-zA-Z0-9 ]+$/)]],
+      precio: ['', [Validators.required, Validators.pattern(/^\d*\.?\d+$/)]],
     });
 
     this.searchForm.valueChanges.subscribe(() => {
@@ -92,15 +93,17 @@ export class ProductsComponent implements OnInit {
 
   applyFilter() {
     const { search, category } = this.searchForm.value;
-    this.filteredDataSource = this.dataSource.filter((product) => {
-      const matchesSearch = search
-        ? product.nombre.toLowerCase().includes(search.toLowerCase())
-        : true;
-      const matchesCategory = category
-        ? product.categoria.id === category
-        : true;
-      return matchesSearch && matchesCategory;
-    });
+    this.filteredDataSource = this.dataSource
+      .filter((product) => {
+        const matchesSearch = search
+          ? product.nombre.toLowerCase().includes(search.toLowerCase())
+          : true;
+        const matchesCategory = category
+          ? product.categoria.id === category
+          : true;
+        return matchesSearch && matchesCategory;
+      })
+      .sort((a, b) => a.nombre.localeCompare(b.nombre)); // Ordenar alfabéticamente
   }
 
   addData(product: Product) {

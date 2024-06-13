@@ -12,6 +12,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Category } from '../../../types/category.types';
+import { SelectImageComponent } from '../../../components/select-image/select-image.component';
 
 @Component({
   selector: 'app-dialog-add-category',
@@ -24,6 +25,7 @@ import { Category } from '../../../types/category.types';
     MatInputModule,
     FormsModule,
     ReactiveFormsModule,
+    SelectImageComponent
   ],
 })
 export class DialogAddCategoryComponent implements OnInit {
@@ -37,54 +39,28 @@ export class DialogAddCategoryComponent implements OnInit {
   ngOnInit() {
     this.categoryForm = this.fb.group({
       nombre: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9 ]+$/)]],
-      imagen: [''],
+      imagen: ['', Validators.required],
     });
   }
 
-  selectedFile!: File;
-  imagePreview: string | null = null;
-  imageBlob!: Blob;
-
-  onFileSelected(event: Event): void {
-    const fileInput = event.target as HTMLInputElement;
-    if (fileInput.files && fileInput.files[0]) {
-      this.selectedFile = fileInput.files[0];
-
-      // Crear una vista previa de la imagen
-      const reader = new FileReader();
-      reader.onload = (e: ProgressEvent<FileReader>) => {
-        this.imagePreview = e.target?.result as string;
-
-        this.convertToBlob(this.selectedFile);
-      };
-      reader.readAsDataURL(this.selectedFile);
-    }
-  }
-
-  convertToBlob(file: File): void {
-    const reader = new FileReader();
-    reader.onload = (e: ProgressEvent<FileReader>) => {
-      const arrayBuffer = e.target?.result as ArrayBuffer;
-      this.imageBlob = new Blob([new Uint8Array(arrayBuffer)], {
-        type: file.type,
-      });
-    };
-    reader.readAsArrayBuffer(file);
+  onSelectedImage(image : string){
+    this.control('imagen').patchValue(image)
   }
 
   save() {
+    console.log(this.categoryForm.valid);
+    console.log(this.categoryForm.getRawValue());
+    
+    
     this.categoryForm.markAllAsTouched()
     if (this.categoryForm.valid) {
-      this.convertBlobToBase64(this.imageBlob).then((base64Data: string) => {
         const categoryToSave: Category = {
           id: 0,
           nombre: this.control('nombre').value,
-          imagen: base64Data,
+          imagen: this.control('imagen').value,
         };
-        console.log('SAVE', categoryToSave);
-        
         this.dialogRef.close(categoryToSave);
-      });
+     
     }
   }
 

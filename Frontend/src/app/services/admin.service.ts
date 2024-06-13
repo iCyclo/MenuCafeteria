@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { Product } from '../types/product.types';
 import { Category } from '../types/category.types';
 
@@ -13,7 +13,9 @@ export class AdminService {
   constructor(private http: HttpClient) {}
 
   getProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.baseUrl}/productos`);
+    return this.http.get<Product[]>(`${this.baseUrl}/productos`).pipe(
+      map(products => products.sort((a, b) => a.nombre.localeCompare(b.nombre)))
+    );
   }
 
   saveCategory(category: Category): Observable<string> {

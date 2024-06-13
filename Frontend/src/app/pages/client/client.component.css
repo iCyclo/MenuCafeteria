@@ -22,7 +22,6 @@ button{
     top: 2rem;
     right: 2rem;
     background-color: white;
-    transition: width 0.2s ease;
     overflow-x: hidden;
     overflow-y: auto;
 }

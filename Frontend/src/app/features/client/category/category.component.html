@@ -1,21 +1,27 @@
 <div class="container">
   <h1>{{ category }}</h1>
-  @if (products) {
-    <img class="category-img" [src]="'data:image/png;base64,' + products[0].categoria.imagen" [alt]="category" >
-  }
-      
-  <ul class="list">
-    @for (product of products; track $index) {
-    <li>
-      <div class="name-price flex">
-        <span>
-          {{ product.nombre }}
-        </span>
-        <div class="separator"></div>
-        <span>$ {{ product.precio }}</span>
-      </div>
-      <p>{{ product.descripcion }}</p>
-    </li>
+  <div class="flex content">
+    @if (products) {
+    <img
+      class="category-img"
+      [src]="'data:image/png;base64,' + categoryImage"
+      [alt]="category"
+    />
     }
-  </ul>
+
+    <ul class="list">
+      @for (product of products; track $index) {
+      <li>
+        <div class="name-price flex">
+          <span>
+            {{ product.nombre }}
+          </span>
+          <div class="separator"></div>
+          <span>$ {{ product.precio }}</span>
+        </div>
+        <p>{{ product.descripcion }}</p>
+      </li>
+      }
+    </ul>
+  </div>
 </div>

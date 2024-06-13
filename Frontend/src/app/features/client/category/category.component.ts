@@ -14,6 +14,8 @@ export default class CategoryComponent implements OnInit {
   products!: Product[];
   category!: string;
 
+  categoryImage : string;
+
   constructor(
     private route: ActivatedRoute,
     private clientService: ClientService
@@ -22,9 +24,10 @@ export default class CategoryComponent implements OnInit {
   ngOnInit() {
     this.route.params.pipe(
       tap(p => {this.category = p['categoryName'];}),
+      switchMap(()=> this.clientService.getCategory(this.category)),
+      tap(category => this.categoryImage = category.imagen),
       switchMap(()=> this.clientService.getProductsByCategory(this.category)),
       tap(products=> this.products = products),
-      tap(console.log)
     ).subscribe()
   }
 }
