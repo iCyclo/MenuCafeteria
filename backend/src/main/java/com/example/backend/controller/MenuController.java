@@ -39,6 +39,16 @@ public class MenuController {
         return ResponseEntity.ok(categoriaRepository.findAll());
     }
 
+    @GetMapping("categoria-por-nombre")
+    public ResponseEntity<Categoria> getCategoriaPorNombre(@RequestParam String nombre) {
+        Categoria categoria = categoriaRepository.findByNombre(nombre);
+        if (categoria != null) {
+            return ResponseEntity.ok(categoria);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @GetMapping("filtrar-productos")
     public ResponseEntity<List<Producto>> filtrarProductos(@RequestParam String categoria) {
         return ResponseEntity.ok(productoRepository.findByCategoriaNombre(categoria));
